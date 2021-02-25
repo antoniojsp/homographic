@@ -8,8 +8,6 @@ import requests
 import logging
 import os
 
-
-
 app = FlaskAPI(__name__)
 cors = CORS(app, resources={r'/*': {"origins": '*'}})
 
@@ -32,14 +30,13 @@ def process():
     if data:
         vote_list = [0,0,0,0]#representation of a ballot. Each index represent a cadidate. We enforce one vote per ballot by using droplist in the frontend
         vote_list[int(data['input'])] = 1 #add 1 to the index number of the candidate choosen
-        key = requests.post('http://server/key') #request a public key from the server to encrypt the ballot
-        llave  = json.loads(key.text) #gets public key from the server for encryptation 
+        key = requests.post('http://server_decrypt:90/key') #request a public key from the server to encrypt the ballot
+        llave  = json.loads(key.text) #gets public key from the server_encrypt for encryptation 
 
         public_key_rec = paillier.PaillierPublicKey(n=int(llave['public_key']['n']))#create public key obj from the key sent by the server
 
         vote_encrypt_list = encrypt(public_key_rec, vote_list)#function encrypt the ballot. For instance, an list [0,1,0,0] means one vote for candidate 1
-
-        temp = requests.post(data['dns'],json=vote_encrypt_list) #send data to the server to be added to the tally. Data is already encrypted encrypted.
+        temp = requests.post('http://server',json=vote_encrypt_list) #send data to the server to be added to the tally. Data is already encrypted encrypted.
 
         results = json.loads(temp.text) #gets sucess or fail, depents on the results of the vote counting 
 

@@ -26,6 +26,15 @@ services:
     image: pyserver:v1
     ports:
       - 80:80
+    depends_on:
+      - server_decrypt
+
+  server_decrypt:
+    build:
+      context: ./server_decrypt
+    image: pyserver_decrypt:v1
+    ports:
+      - 90:90
 
 
 
