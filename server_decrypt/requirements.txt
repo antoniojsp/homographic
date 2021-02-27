@@ -4,3 +4,4 @@ pymongo
 dnspython
 flask_cors
 requests
+pyopenssl

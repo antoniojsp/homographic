@@ -8,6 +8,7 @@ import requests
 import logging
 import os
 
+
 app = FlaskAPI(__name__)
 cors = CORS(app, resources={r'/*': {"origins": '*'}})
 
@@ -20,7 +21,6 @@ def encrypt(public, input):
     enc_temp['public_key'] = {'g': public.g, 'n': public.n}
     enc_temp['values'] = [(str(x.ciphertext()), x.exponent) for x in encrynumber_list]
     return json.dumps(enc_temp)
-
 
 @app.route("/", methods=['GET','POST'])
 def process():
@@ -40,7 +40,9 @@ def process():
 
         results = json.loads(temp.text) #gets sucess or fail, depents on the results of the vote counting 
 
-        return json.dumps(results)
+        confirmation = json.dumps(results)
+        app.logger.info(confirmation)
+        return confirmation
 
 
 @app.route("/css/<path:filename>")
